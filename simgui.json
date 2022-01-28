@@ -1,0 +1,21 @@
+{
+  "HALProvider": {
+    "Solenoids": {
+      "window": {
+        "visible": true
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Drive": "Subsystem",
+      "/LiveWindow/Drive/Drive Differential": "DifferentialDrive",
+      "/LiveWindow/Indexer": "Subsystem",
+      "/LiveWindow/Intake": "Subsystem",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Auto Mode": "String Chooser",
+      "/SmartDashboard/Autonomous Command": "Command"
+    }
+  }
+}
