@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMTalonSRX;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 
@@ -124,8 +123,6 @@ public class Robot extends TimedRobot
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-
-    CameraServer.startAutomaticCapture();
 
     table = NetworkTableInstance.getDefault().getTable("limelight");
     tv = table.getEntry("tv");
