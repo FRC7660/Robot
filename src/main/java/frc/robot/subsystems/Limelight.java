@@ -20,7 +20,7 @@ public class Limelight {
     
     
     //the data that will be needed 
-    public static void LimelightDistance() {
+    public static double LimelightDistance() {
 
         //retrieve data from the limelight
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -75,6 +75,7 @@ public class Limelight {
         //this will make the equation d
         double d = h / tanA;
 
+        return d; //returns the distance
         }
     
     
