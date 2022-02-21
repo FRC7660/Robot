@@ -11,6 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,12 +35,22 @@ public class Drive extends SubsystemBase {
   public void arcadeDrive(DoubleSupplier speed, DoubleSupplier rotation) {
       driveDifferential.arcadeDrive(speed.getAsDouble(), rotation.getAsDouble());
   }
-
+  
+  public void driveToShoot() { //drives to be 8 feet from the hub
+    while(Limelight.d() > 100) { //tell it to drive forward
+      leftGroup.set(0.5);
+      rightGroup.set(0.5);
+    }
+    //turn off motors after reaching the target area
+    leftGroup.set(0);
+    rightGroup.set(0);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Left Velocity", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Right Velocity", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("LimeLight", Limelight.d());
   }
 
   @Override

@@ -10,6 +10,7 @@ import frc.robot.commands.DriveRobot;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -26,6 +27,8 @@ public class RobotContainer {
 
   private XboxController controller1 = new XboxController(0);
   private XboxController controller2 = new XboxController(1);
+
+  private Limelight limelight;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private RobotContainer() {
