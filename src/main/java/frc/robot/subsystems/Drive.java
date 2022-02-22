@@ -34,6 +34,15 @@ public class Drive extends SubsystemBase {
   public void arcadeDrive(DoubleSupplier speed, DoubleSupplier rotation) {
       driveDifferential.arcadeDrive(speed.getAsDouble(), rotation.getAsDouble());
   }
+  public void driveToShoot() { //drives to be 8 feet from the hub
+    while(Limelight.d() > 100) { //tell it to drive forward
+      leftGroup.set(0.5);
+      rightGroup.set(0.5);
+    }
+    //turn off motors after reaching the target area
+    leftGroup.set(0);
+    rightGroup.set(0);
+  }
 
   @Override
   public void periodic() {
