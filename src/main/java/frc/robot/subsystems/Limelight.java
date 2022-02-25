@@ -19,25 +19,25 @@ public class Limelight {
     //   https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
     //
 
-    static NetworkTable table;
+    NetworkTable table;
 
     public Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
     }
     
-    public static double tx() { //gets x from the limelight
+    public double tx() { //gets x from the limelight
         return table.getEntry("tx").getDouble(0.0);
      }
     
-     public static double ty() { //gets y from limelight
+     public double ty() { //gets y from limelight
         return table.getEntry("ty").getDouble(0.0);
      }
 
-     public static double ta() { //gets the area from the limelight
+     public double ta() { //gets the area from the limelight
         return table.getEntry("ta").getDouble(0.0);
      }
 
-    public static double d() { //gets the distance from the limelight
+    public double d() { //gets the distance from the limelight
 
 
         double h2 = 200f; //target height
