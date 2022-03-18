@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ArcadeDriveRobot;
 import frc.robot.commands.AutoIndex;
 import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.TankDriveRobot;
@@ -50,6 +51,10 @@ public class RobotContainer {
   private final Sensors m_sensors = new Sensors();
   private final IntakeSolenoid m_intakeSolenoid = new IntakeSolenoid();
   private final AutonomousCommand m_autoCommand;
+  private final TankDriveRobot m_driveTank;
+  private final ArcadeDriveRobot m_driveArcade;
+
+  private Integer m_slowUpdate = 0;
   
   private XboxController controller1 = new XboxController(0);
   private XboxController controller2 = new XboxController(1);
@@ -68,9 +73,11 @@ public class RobotContainer {
     } else {
         m_limelight = new LimelightSim();
     }
-
-    m_drive.setDefaultCommand(new TankDriveRobot(m_drive, controller1::getLeftY, controller2::getLeftY));
-
+    m_driveTank = new TankDriveRobot(m_drive, controller1::getLeftY, controller2::getLeftY);
+    m_driveArcade = new ArcadeDriveRobot(m_drive, controller1::getLeftX, controller1::getLeftY);
+    m_drive.setDefaultCommand (m_driveTank);
+    SmartDashboard.putBoolean("isTankDrive", true);
+    SmartDashboard.putBoolean("setTankDrive", true);
     m_autoCommand = new AutonomousCommand(m_launch, m_intakeSolenoid, m_index, m_drive, m_limelight, m_intake);
   
     m_launch.doInit();
@@ -133,5 +140,27 @@ public class RobotContainer {
 
   public XboxController getController3(){
     return controller3;
+  }
+
+  public void updateDriveMode() {
+    Boolean tankD = SmartDashboard.getBoolean("setTankDrive", true);
+    Command curDrive = m_drive.getDefaultCommand();
+    Command targetDrive = m_driveArcade;
+    if (tankD) {
+      targetDrive = m_driveTank;
+    }
+    if (targetDrive == curDrive) {
+      return;
+    }
+    m_drive.setDefaultCommand(targetDrive);
+    SmartDashboard.putBoolean("isTankDrive", (targetDrive == m_driveTank));
+  }
+
+  public void teleopPeriodic() {
+    m_slowUpdate++;
+    if (m_slowUpdate == 25) {
+      updateDriveMode();
+      m_slowUpdate = 0;
+    }
   }
 }
