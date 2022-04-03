@@ -9,6 +9,7 @@ import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Align;
 import frc.robot.commands.AutoIndex;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.IntakeSolenoid;
 import frc.robot.subsystems.Launch;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightSim;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Sensors;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Index;
@@ -56,12 +58,16 @@ public class RobotContainer {
   private final Climb m_climb = new Climb();
   private final IntakeSolenoid m_intakeSolenoid = new IntakeSolenoid();
   private final AutonomousCommand m_autoCommand;
+  private final AutonomousCommand m_otherCommand;
+  
+  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
   
   private XboxController controller1 = new XboxController(0);
   private XboxController controller2 = new XboxController(1);
   private XboxController controller3 = new XboxController(2);
 
   private Limelight m_limelight;
+
 
   public Sensors getSensors(){
     return m_sensors;
@@ -78,8 +84,10 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new TankDriveRobot(m_drive, controller1::getLeftY, controller2::getLeftY));
 
     m_autoCommand = new AutonomousCommand(m_launch, m_intakeSolenoid, m_index, m_drive, m_limelight, m_intake);
-  
+    m_otherCommand = new AutonomousCommand(m_launch, m_intakeSolenoid, m_index, m_drive, m_limelight, m_intake);
     m_launch.doInit();
+
+    autonChoice();
 
     PortForwarder.add(5801, "10.76.60.11", 5801);
     PortForwarder.add(5800, "10.76.60.11", 5800);
@@ -88,7 +96,6 @@ public class RobotContainer {
     PortForwarder.add(5804, "10.76.60.11", 5804);
     PortForwarder.add(5805, "10.76.60.11", 5805);
 
-    
 
     CameraServer.startAutomaticCapture();
 
@@ -135,18 +142,17 @@ public class RobotContainer {
     five2.whileHeld(new ShootManual(m_launch, m_index, 5000));
   }
 
- 
   public static RobotContainer getInstance(){
     return robotContainer;
   }
 
  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
+   * Use this to pass the autonomous command to the  main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_autoCommand;
+    return m_chooser.getSelected();
   }
 
   public XboxController getController1(){
@@ -159,5 +165,12 @@ public class RobotContainer {
 
   public XboxController getController3(){
     return controller3;
+  }
+
+  public void autonChoice() {
+    m_chooser.setDefaultOption("autoCommand", m_autoCommand);
+    m_chooser.addOption("otherCommand", m_otherCommand);
+
+    SmartDashboard.putData(m_chooser);
   }
 }
