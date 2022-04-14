@@ -18,7 +18,7 @@ public class TurnTwoBallAuton extends SequentialCommandGroup {
             new DriveDistance(drive, 48.0),
             new TurnDegrees(drive, -10.0),
             new SwitchAngle(launch),
-            new ShootManual(launch, index, 2000, 9),
+            new ShootManual(launch, index, 1950, 9),
             new DriveDistance(drive, 12)
             // new TurnDegrees(drive, -180.0), //test turning the other direction, should be in start pos
             // new DriveDistance(drive, 36)//drive forward about 3 feet
