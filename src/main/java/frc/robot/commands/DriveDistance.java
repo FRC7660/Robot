@@ -65,8 +65,8 @@ public class DriveDistance extends CommandBase {
         // should start robot in motion using sparkmax hardware PID/enconders
         drive_subsystem.setLeftRotations(target_rotations);
         drive_subsystem.setRightRotations(target_rotations);
-    System.out.println("Left Inches Travelled: " + rotationsToInches(left_current_rotations));
-    System.out.println("Right Inches Travelled: " + rotationsToInches(right_current_rotations));
+    // System.out.println("Left Inches Travelled: " + rotationsToInches(left_current_rotations));
+    // System.out.println("Right Inches Travelled: " + rotationsToInches(right_current_rotations));
     
   }
 
