@@ -26,17 +26,7 @@ public class RealDrive extends Drive {
 
   private DifferentialDrive driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
-  public void setTankDrive(DoubleSupplier lSpeed, DoubleSupplier rSpeed, Double pOutput) {
-
-    driveTrain.tankDrive(lSpeed.getAsDouble() * pOutput, rSpeed.getAsDouble() * pOutput);
-  }
-
   public void setArcadeDrive(double speed, double rotation) {
-
-    driveTrain.arcadeDrive(speed, rotation);
-  }
-
-  public void setArcadeDrive(Double speed, Double rotation) {
     driveTrain.arcadeDrive(speed, rotation);
   }
 
