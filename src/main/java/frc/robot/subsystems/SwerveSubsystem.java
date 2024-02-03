@@ -17,9 +17,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
@@ -39,7 +43,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDrive swerveDrive;
 
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
-  public double maximumSpeed = Units.feetToMeters(14.5);
+  public double maximumSpeed = Units.feetToMeters(15);
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -47,6 +51,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param directory Directory of swerve drive config files.
    */
   public SwerveSubsystem(File directory) {
+
+    SmartDashboard.putNumber("Speed Setting", 10);
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
@@ -131,7 +137,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (setOdomToStart) {
       resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile(autoName));
     }
-
+ 
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return auto;
   }
@@ -236,9 +242,13 @@ public class SwerveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds velocity) {
     swerveDrive.drive(velocity);
   }
-
+  
   @Override
-  public void periodic() {}
+  public void periodic() {
+    maximumSpeed = Units.feetToMeters(SmartDashboard.getNumber("Speed Setting", 10));
+   swerveDrive.setMaximumSpeed(maximumSpeed);
+
+  }
 
   @Override
   public void simulationPeriodic() {}
@@ -391,7 +401,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /** Lock the swerve drive to prevent it from moving. */
-  public void lock() {
+  public void lock() { 
     swerveDrive.lockPose();
   }
 
