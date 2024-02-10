@@ -6,7 +6,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -16,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Launch.LaunchPosition;
 
+
+
 public class Launcher extends SubsystemBase {
   /** Creates a new Launcher. */
   private CANSparkMax upper = new CANSparkMax(Constants.Launch.upperCANID, MotorType.kBrushless);
@@ -24,6 +29,12 @@ public class Launcher extends SubsystemBase {
 
   private boolean tuningPIDS = false;
 
+  public REVLibError enableSoftLimit​(CANSparkBase.SoftLimitDirection kForward, boolean True) {
+    return REVLibError.kOk;
+  };
+  public REVLibError setSoftLimit​(CANSparkBase.SoftLimitDirection kForward) {
+    return null;
+  }
   private DoubleSolenoid angleSwitcher =
       new DoubleSolenoid(
           PneumaticsModuleType.CTREPCM,
