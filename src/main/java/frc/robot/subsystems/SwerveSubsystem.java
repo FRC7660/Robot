@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -33,7 +36,9 @@ import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
+import swervelib.motors.TalonFXSwerve;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -47,6 +52,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final Timer limelightTimer;
   private double timerTicks;
+
+  Orchestra _orchestra;
 
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
@@ -88,11 +95,37 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setHeadingCorrection(
         false); // Heading correction should only be used while controlling the robot via angle.
 
+    setupOrchestra();
+    _orchestra.loadMusic("4TrackFinCount.chrp");
+    _orchestra.play();
     setupPathPlanner();
     limelightTimer = new Timer();
     limelightTimer.start();
     timerTicks = 0;
     populateDashboard();
+  }
+
+  private void setupOrchestra() {
+    _orchestra = new Orchestra();
+
+    TalonFXSwerve sm;
+    CoreTalonFX c;
+    for (SwerveModule module : swerveDrive.getModules()) {
+      if (module.getAngleMotor() instanceof TalonFXSwerve) {
+        sm = (TalonFXSwerve) module.getAngleMotor();
+        c = (CoreTalonFX) sm.getMotor();
+        if (c instanceof TalonFX) {
+          _orchestra.addInstrument((TalonFX) c);
+        }
+      }
+      if (module.getDriveMotor() instanceof TalonFXSwerve) {
+        sm = (TalonFXSwerve) module.getDriveMotor();
+        c = (CoreTalonFX) sm.getMotor();
+        if (c instanceof TalonFX) {
+          _orchestra.addInstrument((TalonFX) c);
+        }
+      }
+    }
   }
 
   /** Setup AutoBuilder for PathPlanner. */
@@ -174,6 +207,31 @@ public class SwerveSubsystem extends SubsystemBase {
                   headingX.getAsDouble(),
                   headingY.getAsDouble()));
         });
+  }
+
+  public void MusicPlayer(int SongValue) {
+
+    if (SongValue == 0) {
+      // if (_orchestra.isPlaying()) {
+      //   _orchestra.pause();
+      // } else {
+      _orchestra.loadMusic("4TrackFinCount.chrp");
+      _orchestra.play();
+      // }
+    }
+
+    if (SongValue == 1) {
+      // if (_orchestra.isPlaying()) {
+      //   _orchestra.pause();
+      // } else {
+      _orchestra.loadMusic("4TrackLRider.chrp");
+      _orchestra.play();
+      // }
+    }
+  }
+
+  public Command MusicPlayerCommand(int SongValue) {
+    return this.run(() -> MusicPlayer(SongValue));
   }
 
   /**
