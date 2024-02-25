@@ -116,10 +116,10 @@ public class RobotContainer {
     b.whileTrue(new LaunchWithVelo(m_launch, m_index, 100));
 
     JoystickButton x = new JoystickButton(driver, XboxController.Button.kX.value);
-    x.onTrue(m_swerve.MusicPlayerCommand(0));
+    x.whileTrue(m_swerve.MusicPlayerCommand(0));
 
     JoystickButton y = new JoystickButton(driver, XboxController.Button.kY.value);
-    y.onTrue(m_swerve.MusicPlayerCommand(1));
+    y.whileTrue(m_swerve.MusicPlayerCommand(1));
   }
 
   /**

@@ -210,21 +210,21 @@ public class SwerveSubsystem extends SubsystemBase {
   public void MusicPlayer(int SongValue) {
 
     if (SongValue == 0) {
-      if (_orchestra.isPlaying()) {
-        _orchestra.pause();
-      } else {
-        _orchestra.loadMusic("FinalShort.chrp");
-        _orchestra.play();
-      }
+      // if (_orchestra.isPlaying()) {
+      //   _orchestra.pause();
+      // } else {
+      _orchestra.loadMusic("FinalShort.chrp");
+      _orchestra.play();
+      // }
     }
 
     if (SongValue == 1) {
-      if (_orchestra.isPlaying()) {
-        _orchestra.pause();
-      } else {
-        _orchestra.loadMusic("LRiderShort.chrp");
-        _orchestra.play();
-      }
+      // if (_orchestra.isPlaying()) {
+      //   _orchestra.pause();
+      // } else {
+      _orchestra.loadMusic("LRiderShort.chrp");
+      _orchestra.play();
+      // }
     }
   }
 
