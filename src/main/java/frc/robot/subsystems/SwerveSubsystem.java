@@ -96,6 +96,8 @@ public class SwerveSubsystem extends SubsystemBase {
         false); // Heading correction should only be used while controlling the robot via angle.
 
     setupOrchestra();
+    _orchestra.loadMusic("4TrackFinCount.chrp");
+    _orchestra.play();
     setupPathPlanner();
     limelightTimer = new Timer();
     limelightTimer.start();
@@ -213,7 +215,7 @@ public class SwerveSubsystem extends SubsystemBase {
       // if (_orchestra.isPlaying()) {
       //   _orchestra.pause();
       // } else {
-      _orchestra.loadMusic("FinalShort.chrp");
+      _orchestra.loadMusic("4TrackFinCount.chrp");
       _orchestra.play();
       // }
     }
@@ -222,7 +224,7 @@ public class SwerveSubsystem extends SubsystemBase {
       // if (_orchestra.isPlaying()) {
       //   _orchestra.pause();
       // } else {
-      _orchestra.loadMusic("LRiderShort.chrp");
+      _orchestra.loadMusic("4TrackLRider.chrp");
       _orchestra.play();
       // }
     }
