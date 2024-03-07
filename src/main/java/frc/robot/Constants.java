@@ -25,23 +25,20 @@ public final class Constants {
   public static final boolean kRightFrontDriveInverted = false;
 
   public static final double LOOP_TIME = 0.13;
-  public static final double ROBOT_MASS = 150 * 0.453592;
+  public static final double ROBOT_MASS = 115 * 0.453592;
   public static final Matter CHASSIS =
-      new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
+      new Matter(new Translation3d(0, 0, Units.inchesToMeters(0)), ROBOT_MASS);
 
   public static final PIDConstants autoTranslationPID = new PIDConstants(0.7, 0, 0);
   public static final PIDConstants autoRotationPID = new PIDConstants(0.4, 0, 0.01);
 
   public static class Index {
-    public static final int lowerCANID = 40;
     public static final int whooperCANID = 41;
     public static final int upperCANID = 42;
-    public static final boolean lowerInverted = true;
     public static final boolean upperInverted = true;
     public static final boolean whooperInverted = false;
     public static final int upperBeam = 1;
     public static final int lowerBeam = 0;
-    public static final double lowerSpeed = 0.15;
     public static final double whooperSpeed = 0.9;
     public static final double upperSpeed = 0.3;
   }
@@ -95,7 +92,13 @@ public final class Constants {
     // These are break beam sensor IDS
     public static final int winchLimitLeft = 2;
     public static final int winchLimitRight = 3;
-    public static final double motorSpeedFactor = -0.5;
+    public static final double motorSpeedFactor = -0.9;
+  }
+
+  public static class Transfer {
+    public static final boolean motorInverted = true;
+    public static final double motorSpeed = 0.15;
+    public static final int motorID = 40;
   }
 
   public static final String limelightName = "limelight";
@@ -105,5 +108,6 @@ public final class Constants {
     public static final double LEFT_X_DEADBAND = 0.01;
     public static final double LEFT_Y_DEADBAND = 0.01;
     public static final double RIGHT_X_DEADBAND = 0.01;
+    public static final int TURN_CONSTANT = 6;
   }
 }

@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
-  private CANSparkMax motorLower =
-      new CANSparkMax(Constants.Index.lowerCANID, CANSparkLowLevel.MotorType.kBrushless);
   private CANSparkMax motorWhooper =
       new CANSparkMax(Constants.Index.whooperCANID, CANSparkLowLevel.MotorType.kBrushless);
   private CANSparkMax motorUpper =
@@ -25,20 +23,17 @@ public class Index extends SubsystemBase {
   double speed = 0.95;
 
   public Index() {
-    motorLower.setInverted(Constants.Index.lowerInverted);
     motorWhooper.setInverted(Constants.Index.whooperInverted);
     motorUpper.setInverted(Constants.Index.upperInverted);
   }
 
   private void set(double power) {
-    motorLower.set(power);
     motorWhooper.set(power);
     motorUpper.set(power - 0.5);
     currentSpeed = power;
   }
 
   public void run() {
-    runLower();
     runWhooper();
     runUpper();
   }
@@ -47,12 +42,12 @@ public class Index extends SubsystemBase {
     motorUpper.set(0.9);
   }
 
-  public void setUpper(double speed) {
-    motorUpper.set(speed);
+  public void reverseFeed() {
+    motorUpper.set(-0.9);
   }
 
-  public void setLower(double speed) {
-    motorLower.set(speed);
+  public void setUpper(double speed) {
+    motorUpper.set(speed);
   }
 
   public void setWhooper(double speed) {
@@ -67,10 +62,6 @@ public class Index extends SubsystemBase {
     setWhooper(Constants.Index.whooperSpeed);
   }
 
-  public void runLower() {
-    setLower(Constants.Index.lowerSpeed);
-  }
-
   public boolean isRunning() {
     return !(motorUpper.get() == 0);
   }
@@ -80,7 +71,6 @@ public class Index extends SubsystemBase {
   }
 
   public void stop() {
-    motorLower.set(0);
     motorWhooper.set(0);
     motorUpper.set(0);
   }
@@ -121,6 +111,7 @@ public class Index extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    System.out.println(isPrimed());
     if (isPrimed() == true) {
       stop();
     }

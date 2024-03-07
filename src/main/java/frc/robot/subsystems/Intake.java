@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,8 +22,10 @@ public class Intake extends SubsystemBase {
   private CANSparkMax motorRight =
       new CANSparkMax(Constants.Intake.rightCANID, CANSparkLowLevel.MotorType.kBrushless);
 
+  private SlewRateLimiter limiter = new SlewRateLimiter(0.5);
+
   double speed = Constants.Intake.speed;
-  double currentSpeed = 0.0;
+  double targetSpeed = 0;
 
   public Intake() {
     motorLeft.setInverted(Constants.Intake.leftInverted);
@@ -32,14 +35,11 @@ public class Intake extends SubsystemBase {
   }
 
   private void set(double power) {
-    motorLeft.set(power);
-    motorCenter.set(power);
-    motorRight.set(power);
-    currentSpeed = power;
+    targetSpeed = power;
   }
 
   public void toggle() {
-    if (currentSpeed == 0.0) {
+    if (targetSpeed == 0.0) {
       start();
     } else {
       stop();
@@ -66,6 +66,10 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Intake Running", isRunning());
+
+    motorLeft.set(limiter.calculate(targetSpeed));
+    motorRight.set(limiter.calculate(targetSpeed));
+    motorCenter.set(limiter.calculate(targetSpeed));
   }
 
   public Command reverseIntakeCommand() {

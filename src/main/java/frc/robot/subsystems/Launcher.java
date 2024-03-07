@@ -210,6 +210,10 @@ public class Launcher extends SubsystemBase {
     angle.setIdleMode(IdleMode.kCoast);
   }
 
+  public void lockLauncher() {
+    angle.setIdleMode(IdleMode.kBrake);
+  }
+
   public Command switchAngleCommand() {
     return this.runOnce(() -> switchAngle());
   }

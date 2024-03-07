@@ -6,9 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Index;
+import frc.robot.subsystems.Transfer;
 
 public class PrimeIndex extends Command {
   private final Index index;
+  private final Transfer transfer;
   private boolean inUpper;
   private boolean wasRunning;
 
@@ -17,8 +19,9 @@ public class PrimeIndex extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PrimeIndex(Index index) {
+  public PrimeIndex(Index index, Transfer transfer) {
     this.index = index;
+    this.transfer = transfer;
     inUpper = false;
     wasRunning = index.isRunning();
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,12 +31,9 @@ public class PrimeIndex extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (!wasRunning) {
-      System.out.println("Index is initializing");
-      index.start();
-    } else {
-      index.stop();
-    }
+    System.out.println("Index is initializing");
+    index.start();
+    transfer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,7 +41,7 @@ public class PrimeIndex extends Command {
   public void execute() {
     if (!inUpper && index.isInUpper()) {
       inUpper = true;
-      index.setLower(0);
+      transfer.stop();
     }
   }
 
@@ -49,15 +49,12 @@ public class PrimeIndex extends Command {
   @Override
   public void end(boolean interrupted) {
     index.stop();
+    transfer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (wasRunning) {
-      return true;
-    } else {
-      return index.isPrimed();
-    }
+    return index.isPrimed();
   }
 }

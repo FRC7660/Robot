@@ -1,0 +1,67 @@
+<dashboard-tab
+    tab-name="TeleOperated"
+    slot="tab"
+    selected=""
+    source-provider="NetworkTables"
+><frc-camera-wrapper
+        source-provider="NetworkTables"
+        style="transform: translate(609.188px, 376.038px); width: 489.613px; height: 346.363px;"
+        streams="[]"
+        background-color="black"
+        wait-image="./no-camera-stream.jpg"
+        crosshair-color="white"
+        source-key="/CameraPublisher/USB Camera 1"
+    ></frc-camera-wrapper><frc-sendable-chooser
+        source-provider="NetworkTables"
+        style="transform: translate(724px, 104px); width: 383.187px; height: 79.3875px;"
+        options="[]"
+        source-key="/SmartDashboard/SendableChooser[0]"
+    ></frc-sendable-chooser><frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(620.8px, 0px);"
+        label="Upper Index"
+        source-key="/SmartDashboard/Lower Break-Beam"
+    ></frc-boolean-box><frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(619.4px, 82.2px);"
+        label="Lower Index"
+    ></frc-boolean-box><frc-basic-fms-info
+        source-provider="NetworkTables"
+        style="transform: translate(717.34px, 4.39997px);"
+        source-key="/FMSInfo"
+    ></frc-basic-fms-info><frc-camera-wrapper
+        source-provider="NetworkTables"
+        style="transform: translate(0.787537px, 384px); width: 608px; height: 338.4px;"
+        streams="[]"
+        background-color="black"
+        wait-image="./no-camera-stream.jpg"
+        crosshair-color="white"
+        source-key="/CameraPublisher/USB Camera 0"
+        hide-crosshair=""
+    ></frc-camera-wrapper><frc-camera-wrapper
+        source-provider="NetworkTables"
+        style="transform: translate(2.40002px, 2.3875px); width: 606.362px; height: 383.188px;"
+        source-key="/CameraPublisher/limelight"
+        streams="[]"
+        background-color="black"
+        wait-image="./no-camera-stream.jpg"
+        hide-crosshair=""
+        crosshair-color="white"
+    ></frc-camera-wrapper><frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(618px, 167.8px);"
+        source-key="/SmartDashboard/Intake Running"
+        label="Intake Running"
+    ></frc-boolean-box><frc-swerve-drivebase
+        source-provider="NetworkTables"
+        style="transform: translate(1174.4px, 141.4px);"
+        wheellocations="[2.5,2,2.5,-2,-2.5,2,-2.5,-2]"
+        measuredstates="[0,0,0,0,0,0,0,0]"
+        desiredstates="[0,0,0,0,0,0,0,0]"
+        sizeleftright="4"
+        sizefrontback="5"
+    ></frc-swerve-drivebase></dashboard-tab><dashboard-tab
+    slot="tab"
+    tab-name="Autonomous"
+    source-provider="NetworkTables"
+></dashboard-tab>

@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.367427722973922,
+      "y": 5.5866114582541275
+    },
+    "rotation": 179.5103044068707
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Simple Shoot Center 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Simple Shoot Center 2"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     getAlliance();
+    m_robotContainer.lockLauncher();
   }
 
   private void getAlliance() {
@@ -95,7 +96,7 @@ public class Robot extends TimedRobot {
     }
     getAlliance();
     m_robotContainer.updatePose();
-    m_robotContainer.dropLauncher();
+    m_robotContainer.lockLauncher();
   }
 
   /** This function is called periodically during operator control. */
