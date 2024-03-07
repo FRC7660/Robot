@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isRunning() {
-    return !(motorLeft.get() == 0);
+    return !(targetSpeed == 0);
   }
 
   @Override

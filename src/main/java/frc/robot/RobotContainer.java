@@ -100,7 +100,7 @@ public class RobotContainer {
             () -> driverLeft.getAsBoolean(),
             () -> driverRight.getAsBoolean());
 
-    m_swerve.setDefaultCommand(!RobotBase.isSimulation() ? advancedDrive : advancedDrive);
+    m_swerve.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive : advancedDrive);
 
     // -m_index.setDefaultCommand(m_index.manualIntake(coDriver::getRightY));
 
