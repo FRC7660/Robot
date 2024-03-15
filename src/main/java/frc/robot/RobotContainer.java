@@ -15,14 +15,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Launch.LaunchPreset;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AbsoluteDriveAdv;
 import frc.robot.commands.AlignLaunchAuto;
 import frc.robot.commands.LaunchWithVelo;
 import frc.robot.commands.LaunchWithVeloAuton;
+import frc.robot.commands.PassiveLaunchSpin;
 import frc.robot.commands.PrimeIndex;
+import frc.robot.commands.SwitchLaunchAngle;
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -31,6 +35,7 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Transfer;
 import java.io.File;
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -63,6 +68,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("index", new PrimeIndex(m_index, m_transfer));
     NamedCommands.registerCommand(
         "align-launch", new AlignLaunchAuto(m_swerve, m_launch, m_index, 5300, 1));
+    NamedCommands.registerCommand(
+        "subwoofer-launch", new AlignLaunchAuto(m_swerve, m_launch, m_index, 3500, 2));
     NamedCommands.registerCommand("reverse intake", m_intake.reverseIntakeCommand());
 
     CameraServer.startAutomaticCapture(0);
@@ -71,12 +78,19 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    int povAngle = driver.getPOV();
+    DoubleSupplier povAngle = () -> driver.getPOV();
 
-    Trigger driverUp = new Trigger(() -> (povAngle >= 315 || povAngle <= 45));
-    Trigger driverDown = new Trigger(() -> (povAngle >= 135 && povAngle <= 225));
-    Trigger driverLeft = new Trigger(() -> (povAngle >= 225 && povAngle <= 315));
-    Trigger driverRight = new Trigger(() -> (povAngle >= 45 && povAngle <= 135));
+    Trigger driverUp =
+        new Trigger(
+            () ->
+                (povAngle.getAsDouble() >= 315
+                    || (povAngle.getAsDouble() <= 45 && povAngle.getAsDouble() >= 0)));
+    Trigger driverDown =
+        new Trigger(() -> (povAngle.getAsDouble() >= 135 && povAngle.getAsDouble() <= 225));
+    Trigger driverLeft =
+        new Trigger(() -> (povAngle.getAsDouble() >= 225 && povAngle.getAsDouble() <= 315));
+    Trigger driverRight =
+        new Trigger(() -> (povAngle.getAsDouble() >= 45 && povAngle.getAsDouble() <= 135));
 
     AbsoluteDrive closedAbsoluteDrive =
         new AbsoluteDrive(
@@ -94,35 +108,34 @@ public class RobotContainer {
             m_swerve,
             () -> MathUtil.applyDeadband(-driver.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
             () -> MathUtil.applyDeadband(-driver.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () -> MathUtil.applyDeadband(-driver.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
+            () -> MathUtil.applyDeadband(driver.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
             () -> driverUp.getAsBoolean(),
             () -> driverDown.getAsBoolean(),
             () -> driverLeft.getAsBoolean(),
             () -> driverRight.getAsBoolean());
 
-    m_swerve.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive : advancedDrive);
+    m_swerve.setDefaultCommand(
+        !RobotBase.isSimulation() ? closedAbsoluteDrive : closedAbsoluteDrive);
+    m_launch.setDefaultCommand(new PassiveLaunchSpin(m_launch, m_index));
 
     // -m_index.setDefaultCommand(m_index.manualIntake(coDriver::getRightY));
 
-    m_climb.setDefaultCommand(m_climb.setWinchCommand(coDriver::getLeftY));
+    m_climb.setDefaultCommand(
+        m_climb.setWinchCommand(
+            () -> MathUtil.applyDeadband(coDriver.getLeftY(), Constants.Climb.deadzone)));
 
     // add auto options
     m_chooser.setDefaultOption("Test Drive", m_swerve.getAutonomousCommand("Test Drive"));
 
     m_chooser.addOption("Mid 2 Piece", m_swerve.getAutonomousCommand("Mid 2 Piece"));
-    m_chooser.addOption("Turn Auto", m_swerve.getAutonomousCommand("Turn Auto"));
-    m_chooser.addOption("Drive and Turn", m_swerve.getAutonomousCommand("drive and turn"));
     m_chooser.addOption("1 Centerline", m_swerve.getAutonomousCommand("1 Centerline"));
     m_chooser.addOption("5 Centerline", m_swerve.getAutonomousCommand("5 Centerline"));
     m_chooser.addOption("Close 2", m_swerve.getAutonomousCommand("Close 2"));
+    m_chooser.addOption("Just Shoot", new AlignLaunchAuto(m_swerve, m_launch, m_index, 3200, 1));
     m_chooser.addOption("Just Chill", m_swerve.noAuto());
-    m_chooser.addOption(
-        "Simple Shoot Center", m_swerve.getAutonomousCommand("Simple Shoot Center"));
-    m_chooser.addOption(
-        "Simple Shoot Safe Blue", m_swerve.getAutonomousCommand("Simple Shoot Safe Blue"));
-    m_chooser.addOption("Simple Shoot Amp", m_swerve.getAutonomousCommand("Simple Shoot Amp"));
-    m_chooser.addOption(
-        "Simple Shoot Safe Red", m_swerve.getAutonomousCommand("Simple Shoot Safe Red"));
+    m_chooser.addOption("Short Shot Center", m_swerve.getAutonomousCommand("Short Shot Center"));
+    m_chooser.addOption("Short Shot Safe", m_swerve.getAutonomousCommand("Short Shot Safe"));
+    m_chooser.addOption("Short Shot Amp", m_swerve.getAutonomousCommand("Short Shot Amp"));
 
     SmartDashboard.putData(m_chooser);
   }
@@ -157,13 +170,22 @@ public class RobotContainer {
     x.whileTrue(m_swerve.updatePositionCommand());
 
     JoystickButton a = new JoystickButton(driver, XboxController.Button.kA.value);
-    a.whileTrue(new LaunchWithVelo(m_launch, m_index, 2050, false));
+    a.whileTrue(new LaunchWithVelo(m_launch, m_index, 3500, false));
 
     JoystickButton y = new JoystickButton(driver, XboxController.Button.kY.value);
-    y.whileTrue(m_intake.reverseIntakeCommand());
+    y.whileTrue(new SwitchLaunchAngle(m_launch));
 
     JoystickButton b = new JoystickButton(driver, XboxController.Button.kB.value);
-    b.whileTrue(m_swerve.setRotationCommand(180));
+    b.whileTrue(new LaunchWithVelo(m_launch, m_index, 1500, true));
+
+    POVButton up = new POVButton(driver, 0);
+    up.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.SAFE));
+
+    POVButton down = new POVButton(driver, 180);
+    down.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.SUBWOOFER));
+
+    POVButton left = new POVButton(driver, 270);
+    left.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.AMP));
   }
 
   /**

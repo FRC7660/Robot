@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -32,11 +34,15 @@ import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
+import swervelib.motors.TalonFXSwerve;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -49,6 +55,7 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
+  private final ArrayList<TalonFX> driveTalons = new ArrayList<TalonFX>();
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
@@ -91,6 +98,8 @@ public class SwerveSubsystem extends SubsystemBase
     setupPathPlanner();
 
     setupCustom();
+    initDriveTalons();
+    setupFOC();
   }
 
   /**
@@ -104,6 +113,8 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
 
     setupCustom();
+    initDriveTalons();
+    setupFOC();
   }
 
   /**
@@ -625,6 +636,27 @@ public class SwerveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("Position Set X", 0);
     SmartDashboard.putNumber("Position Set Y", 0);
     SmartDashboard.putNumber("Rotation Set", 0);
+  }
+
+  private void initDriveTalons() {
+    TalonFXSwerve sm;
+    CoreTalonFX c;
+    for (SwerveModule module : swerveDrive.getModules()){
+      if(module.getDriveMotor() instanceof TalonFXSwerve){
+        sm = (TalonFXSwerve) module.getDriveMotor();
+        c = (CoreTalonFX) sm.getMotor();
+        if(c instanceof TalonFX){
+          driveTalons.add((TalonFX) c);
+        }
+      }
+    }
+  }
+
+  private void setupFOC() {
+    DutyCycleOut control = new DutyCycleOut(1, true, false, false, false);
+    for(TalonFX talon : driveTalons){
+      talon.setControl(control);
+    }
   }
 
   public Command dashboardPositionResetCommand() {

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -19,8 +20,7 @@ public class Intake extends SubsystemBase {
 
   private CANSparkMax motorCenter =
       new CANSparkMax(Constants.Intake.centerCANID, CANSparkLowLevel.MotorType.kBrushless);
-  private CANSparkMax motorRight =
-      new CANSparkMax(Constants.Intake.rightCANID, CANSparkLowLevel.MotorType.kBrushless);
+  private TalonFX motorRight = new TalonFX(Constants.Intake.rightCANID);
 
   private SlewRateLimiter limiter = new SlewRateLimiter(0.5);
 

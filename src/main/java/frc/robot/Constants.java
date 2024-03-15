@@ -58,7 +58,7 @@ public final class Constants {
     public static final double launcherI = 0;
     public static final double launcherD = 0;
     public static final double launcherFF = 0.000156;
-    public static final double angleP = 0.00025;
+    public static final double angleP = 0.0045;
     public static final double angleI = 0;
     public static final double angleD = 0;
     public static final double angleFF = 0;
@@ -67,21 +67,30 @@ public final class Constants {
     public static final int angleID = 46;
     public static final double allowedVeloPercent = 10;
     public static final double allowedDifferencePercent = 5;
-    public static final double closeLaunchPosition = 585;
-    public static final double farLaunchPosition = 655;
-    public static final double angleMin = 581;
-    public static final double angleMax = 660;
+    public static final double closeLaunchPosition = 828;
+    public static final double farLaunchPosition = 752;
+    public static final double angleMin = 750;
+    public static final double angleMax = 828;
     public static final boolean angleMotorInverted = true;
-    public static final boolean angleEncoderInverted = true;
+    public static final boolean angleEncoderInverted = false;
     public static final boolean lowerMotorInverted = true;
     public static final boolean upperMotorInverted = false;
     public static final double speedFarSpeaker = 2800;
     public static final double angleConversionFactor = 1000;
     public static final double launcherConversionFactor = 1;
+    public static final double safeLaunchVelo = 6000;
+    public static final double subwooferLaunchVelo = 3500;
+    public static final double ampLaunchVelo = 1500;
 
     public enum LaunchPosition {
       CLOSE,
       FAR
+    }
+
+    public enum LaunchPreset {
+      SUBWOOFER,
+      SAFE,
+      AMP
     }
   }
 
@@ -93,6 +102,7 @@ public final class Constants {
     public static final int winchLimitLeft = 2;
     public static final int winchLimitRight = 3;
     public static final double motorSpeedFactor = -0.9;
+    public static final double deadzone = 0.1;
   }
 
   public static class Transfer {
@@ -107,7 +117,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final double LEFT_X_DEADBAND = 0.01;
     public static final double LEFT_Y_DEADBAND = 0.01;
-    public static final double RIGHT_X_DEADBAND = 0.01;
+    public static final double RIGHT_X_DEADBAND = 0.1;
     public static final int TURN_CONSTANT = 6;
   }
 }

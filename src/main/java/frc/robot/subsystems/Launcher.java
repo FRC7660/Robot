@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Launch.LaunchPosition;
+import frc.robot.Constants.Launch.LaunchPreset;
 import frc.robot.Robot;
 
 public class Launcher extends SubsystemBase {
@@ -39,6 +40,8 @@ public class Launcher extends SubsystemBase {
   private boolean tuningPIDS = false;
 
   private LaunchPosition goalPosition, curPosition;
+
+  private double goalVelo;
 
   public Launcher() {
 
@@ -76,6 +79,8 @@ public class Launcher extends SubsystemBase {
     angleController.setSmartMotionMinOutputVelocity(0, 0);
     angleController.setSmartMotionMaxAccel(1500, 0);
     angleController.setSmartMotionAllowedClosedLoopError(0, 0);
+
+    goalVelo = Constants.Launch.farLaunchPosition;
   }
 
   private void showPIDs() {
@@ -179,6 +184,23 @@ public class Launcher extends SubsystemBase {
     tuningPIDS = !tuningPIDS;
   }
 
+  public void setLaunchPreset(LaunchPreset preset) {
+    if (preset == LaunchPreset.SUBWOOFER) {
+      goalPosition = LaunchPosition.CLOSE;
+      goalVelo = Constants.Launch.subwooferLaunchVelo;
+    } else if (preset == LaunchPreset.SAFE) {
+      goalPosition = LaunchPosition.FAR;
+      goalVelo = Constants.Launch.safeLaunchVelo;
+    } else if (preset == LaunchPreset.AMP) {
+      goalPosition = LaunchPosition.CLOSE;
+      goalVelo = Constants.Launch.ampLaunchVelo;
+    }
+  }
+
+  public void setPresetVelo() {
+    setLaunchVelocity(goalVelo);
+  }
+
   @FunctionalInterface
   private interface MyMethod {
     void apply(double p, double i, double d, double ff);
@@ -191,18 +213,18 @@ public class Launcher extends SubsystemBase {
       updatePIDFromDashboard("Launcher", this::updateLauncherPIDs);
       updatePIDFromDashboard("Angle", this::updateAnglePIDs);
     }
-    angle.set(0);
-    /*if (goalPosition == LaunchPosition.FAR) {
-      angleController.setReference(Constants.Launch.farLaunchPosition, ControlType.kSmartMotion);
+    if (goalPosition == LaunchPosition.FAR) {
+      angleController.setReference(Constants.Launch.farLaunchPosition, ControlType.kPosition);
       curPosition = goalPosition;
       SmartDashboard.putNumber("Angle Desired", Constants.Launch.farLaunchPosition);
     } else {
-      angleController.setReference(Constants.Launch.closeLaunchPosition, ControlType.kSmartMotion);
+      angleController.setReference(Constants.Launch.closeLaunchPosition, ControlType.kPosition);
       curPosition = goalPosition;
       SmartDashboard.putNumber("Angle Desired", Constants.Launch.closeLaunchPosition);
-    }*/
+    }
     SmartDashboard.putNumber("Angle Speed", angle.get());
-    SmartDashboard.putNumber("Launch Curr Velo", getCurrentVelocity());
+    SmartDashboard.putNumber("Launch Curr Velo Lower", upperLauncherEncoder.getVelocity());
+    SmartDashboard.putNumber("Launch Curr Velo Upper", lowerLauncherEncoder.getVelocity());
     SmartDashboard.putNumber("Angle Position", angleEncoder.getPosition());
   }
 
@@ -216,5 +238,9 @@ public class Launcher extends SubsystemBase {
 
   public Command switchAngleCommand() {
     return this.runOnce(() -> switchAngle());
+  }
+
+  public Command setLaunchPresetCommand(LaunchPreset preset) {
+    return this.runOnce(() -> setLaunchPreset(preset));
   }
 }
