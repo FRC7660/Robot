@@ -25,6 +25,11 @@ public class Transfer extends SubsystemBase {
     currentSpeed = Constants.Transfer.motorSpeed;
   }
 
+  public void reverse() {
+    motor.set(-Constants.Transfer.motorSpeed);
+    currentSpeed = -Constants.Transfer.motorSpeed;
+  }
+
   public void stop() {
     motor.set(0);
     currentSpeed = 0;

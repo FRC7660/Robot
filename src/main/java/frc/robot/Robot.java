@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private Boolean hasFlipped;
 
   public static Alliance alliance;
 
@@ -34,6 +36,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     getAlliance();
+    PortForwarder.add(5800, "10.76.60.15", 5800);
+    PortForwarder.add(5801, "10.76.60.15", 5801);
+    PortForwarder.add(5802, "10.76.60.15", 5802);
   }
 
   private void getAlliance() {

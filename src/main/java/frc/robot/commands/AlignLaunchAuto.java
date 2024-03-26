@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Launch.LaunchPreset;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -13,22 +14,26 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class AlignLaunchAuto extends Command {
   private final SwerveSubsystem swerve;
   private final Launcher launcher;
-  private final double velo;
+  private final LaunchPreset launchPreset;
   private final double launchTime;
   private final Timer timer;
   private final Index index;
 
   /** Creates a new AlignLaunchAuto. */
   public AlignLaunchAuto(
-      SwerveSubsystem swerve, Launcher launcher, Index index, double velo, double launchTime) {
+      SwerveSubsystem swerve,
+      Launcher launcher,
+      Index index,
+      LaunchPreset launchPreset,
+      double launchTime) {
     this.swerve = swerve;
     this.launcher = launcher;
     this.index = index;
-    this.velo = velo;
+    this.launchPreset = launchPreset;
     this.launchTime = launchTime;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve, launcher, index);
+    addRequirements(launcher, index);
   }
 
   // Called when the command is initially scheduled.
@@ -36,14 +41,15 @@ public class AlignLaunchAuto extends Command {
   public void initialize() {
     timer.reset();
     timer.stop();
+    launcher.setLaunchPreset(launchPreset);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    launcher.setPresetVelo();
     if (swerve.align()) {
-      launcher.setLaunchVelocity(velo);
-      if (launcher.readyToLaunch(velo)) {
+      if (launcher.isAtTargetVelo()) {
         index.feed();
         timer.start();
       }

@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,10 +23,13 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
 import frc.robot.commands.AbsoluteDriveAdv;
 import frc.robot.commands.AlignLaunchAuto;
+import frc.robot.commands.FeedLauncher;
+import frc.robot.commands.IntakeSpit;
 import frc.robot.commands.LaunchWithVelo;
 import frc.robot.commands.LaunchWithVeloAuton;
 import frc.robot.commands.PassiveLaunchSpin;
 import frc.robot.commands.PrimeIndex;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.SwitchLaunchAngle;
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.Climb;
@@ -62,14 +66,12 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Create commands for PathPlanner
-    NamedCommands.registerCommand(
-        "launch", new LaunchWithVeloAuton(m_launch, m_index, Constants.Launch.speedFarSpeaker));
     NamedCommands.registerCommand("intake", new ToggleIntake(m_intake, m_transfer));
     NamedCommands.registerCommand("index", new PrimeIndex(m_index, m_transfer));
     NamedCommands.registerCommand(
-        "align-launch", new AlignLaunchAuto(m_swerve, m_launch, m_index, 5300, 1));
+        "align-launch", new AlignLaunchAuto(m_swerve, m_launch, m_index, LaunchPreset.SAFE, 0.5));
     NamedCommands.registerCommand(
-        "subwoofer-launch", new AlignLaunchAuto(m_swerve, m_launch, m_index, 3500, 2));
+        "subwoofer-launch", new LaunchWithVeloAuton(m_launch, m_index, 3500, 0.5));
     NamedCommands.registerCommand("reverse intake", m_intake.reverseIntakeCommand());
 
     CameraServer.startAutomaticCapture(0);
@@ -98,10 +100,16 @@ public class RobotContainer {
             // Applies deadbands and inverts controls because joysticks
             // are back-right positive while robot
             // controls are front-left positive
-            () -> MathUtil.applyDeadband(-driver.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-            () -> MathUtil.applyDeadband(-driver.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () -> -driver.getRightX(),
-            () -> -driver.getRightY());
+            () ->
+                MathUtil.applyDeadband(
+                    driver.getLeftY() * (Robot.alliance == Alliance.Blue ? -1 : 1),
+                    OperatorConstants.LEFT_Y_DEADBAND),
+            () ->
+                MathUtil.applyDeadband(
+                    driver.getLeftX() * (Robot.alliance == Alliance.Blue ? -1 : 1),
+                    OperatorConstants.LEFT_X_DEADBAND),
+            () -> driver.getRightX() * (Robot.alliance == Alliance.Blue ? -1 : 1),
+            () -> driver.getRightY() * (Robot.alliance == Alliance.Blue ? -1 : 1));
 
     AbsoluteDriveAdv advancedDrive =
         new AbsoluteDriveAdv(
@@ -130,12 +138,20 @@ public class RobotContainer {
     m_chooser.addOption("Mid 2 Piece", m_swerve.getAutonomousCommand("Mid 2 Piece"));
     m_chooser.addOption("1 Centerline", m_swerve.getAutonomousCommand("1 Centerline"));
     m_chooser.addOption("5 Centerline", m_swerve.getAutonomousCommand("5 Centerline"));
-    m_chooser.addOption("Close 2", m_swerve.getAutonomousCommand("Close 2"));
-    m_chooser.addOption("Just Shoot", new AlignLaunchAuto(m_swerve, m_launch, m_index, 3200, 1));
+    m_chooser.addOption("Close 2", m_swerve.getAutonomousCommand("Close 2 Note"));
+    m_chooser.addOption("Close 3", m_swerve.getAutonomousCommand("Close 3 Note"));
+    m_chooser.addOption("Mid 2", m_swerve.getAutonomousCommand("2 Piece Mid"));
+    m_chooser.addOption("Amp 2", m_swerve.getAutonomousCommand("Amp 2 Note"));
+    m_chooser.addOption("Amp 3", m_swerve.getAutonomousCommand("Amp 3 Note"));
+    m_chooser.addOption(
+        "Just Shoot", new AlignLaunchAuto(m_swerve, m_launch, m_index, LaunchPreset.SUBWOOFER, 1));
     m_chooser.addOption("Just Chill", m_swerve.noAuto());
     m_chooser.addOption("Short Shot Center", m_swerve.getAutonomousCommand("Short Shot Center"));
     m_chooser.addOption("Short Shot Safe", m_swerve.getAutonomousCommand("Short Shot Safe"));
     m_chooser.addOption("Short Shot Amp", m_swerve.getAutonomousCommand("Short Shot Amp"));
+    m_chooser.addOption("Choreo Test", m_swerve.getAutonomousCommand("ChoreoTest"));
+    m_chooser.addOption("2m drive", m_swerve.getAutonomousCommand("2m drive"));
+    m_chooser.addOption("Choreo 2m Drive", m_swerve.getAutonomousCommand("Choreo 2m"));
 
     SmartDashboard.putData(m_chooser);
   }
@@ -152,10 +168,13 @@ public class RobotContainer {
   private void configureBindings() {
 
     JoystickButton leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    leftBumper.onTrue(new ToggleIntake(m_intake, m_transfer));
+    leftBumper.whileTrue(new RunIntake(m_intake, m_transfer));
 
     JoystickButton rb = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    rb.whileTrue(new LaunchWithVelo(m_launch, m_index, -1500, false));
+    rb.whileTrue(new LaunchWithVelo(m_launch, m_index, -1400, false));
+
+    JoystickButton lb = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    lb.whileTrue(new IntakeSpit(m_intake, m_transfer));
 
     JoystickButton coRB = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
     coRB.onTrue(new PrimeIndex(m_index, m_transfer));
@@ -164,19 +183,19 @@ public class RobotContainer {
     lt.whileTrue(m_swerve.alignCommand());
 
     Trigger rt = new Trigger(() -> driver.getRightTriggerAxis() >= 0.05);
-    rt.whileTrue(new LaunchWithVelo(m_launch, m_index, 5200, false));
+    rt.whileTrue(new FeedLauncher(m_index, m_launch));
 
     JoystickButton x = new JoystickButton(driver, XboxController.Button.kX.value);
     x.whileTrue(m_swerve.updatePositionCommand());
 
     JoystickButton a = new JoystickButton(driver, XboxController.Button.kA.value);
-    a.whileTrue(new LaunchWithVelo(m_launch, m_index, 3500, false));
+    a.whileTrue(new LaunchWithVelo(m_launch, m_index, 2800, false));
 
     JoystickButton y = new JoystickButton(driver, XboxController.Button.kY.value);
     y.whileTrue(new SwitchLaunchAngle(m_launch));
 
     JoystickButton b = new JoystickButton(driver, XboxController.Button.kB.value);
-    b.whileTrue(new LaunchWithVelo(m_launch, m_index, 1500, true));
+    b.whileTrue(new LaunchWithVelo(m_launch, m_index, 5200, true));
 
     POVButton up = new POVButton(driver, 0);
     up.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.SAFE));
@@ -186,6 +205,9 @@ public class RobotContainer {
 
     POVButton left = new POVButton(driver, 270);
     left.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.AMP));
+
+    POVButton right = new POVButton(driver, 90);
+    right.onTrue(m_swerve.flipOdomCommand());
   }
 
   /**

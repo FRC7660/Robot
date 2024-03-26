@@ -27,10 +27,10 @@ public final class Constants {
   public static final double LOOP_TIME = 0.13;
   public static final double ROBOT_MASS = 115 * 0.453592;
   public static final Matter CHASSIS =
-      new Matter(new Translation3d(0, 0, Units.inchesToMeters(0)), ROBOT_MASS);
+      new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
 
-  public static final PIDConstants autoTranslationPID = new PIDConstants(0.7, 0, 0);
-  public static final PIDConstants autoRotationPID = new PIDConstants(0.4, 0, 0.01);
+  public static final PIDConstants autoTranslationPID = new PIDConstants(9, 0, 0);
+  public static final PIDConstants autoRotationPID = new PIDConstants(10, 0, 0.01);
 
   public static class Index {
     public static final int whooperCANID = 41;
@@ -50,7 +50,7 @@ public final class Constants {
     public static final boolean leftInverted = false;
     public static final boolean centerInverted = true;
     public static final boolean rightInverted = true;
-    public static final double speed = 0.95;
+    public static final double speed = 0.6;
   }
 
   public static class Launch {
@@ -67,7 +67,7 @@ public final class Constants {
     public static final int angleID = 46;
     public static final double allowedVeloPercent = 10;
     public static final double allowedDifferencePercent = 5;
-    public static final double closeLaunchPosition = 828;
+    public static final double closeLaunchPosition = 820;
     public static final double farLaunchPosition = 752;
     public static final double angleMin = 750;
     public static final double angleMax = 828;
@@ -80,7 +80,7 @@ public final class Constants {
     public static final double launcherConversionFactor = 1;
     public static final double safeLaunchVelo = 6000;
     public static final double subwooferLaunchVelo = 3500;
-    public static final double ampLaunchVelo = 1500;
+    public static final double ampLaunchVelo = 2800;
 
     public enum LaunchPosition {
       CLOSE,

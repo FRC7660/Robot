@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,14 +13,12 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private CANSparkMax motorLeft =
-      new CANSparkMax(Constants.Intake.leftCANID, CANSparkLowLevel.MotorType.kBrushless);
+  private TalonFX motorLeft = new TalonFX(Constants.Intake.leftCANID);
 
-  private CANSparkMax motorCenter =
-      new CANSparkMax(Constants.Intake.centerCANID, CANSparkLowLevel.MotorType.kBrushless);
+  private TalonFX motorCenter = new TalonFX(Constants.Intake.centerCANID);
   private TalonFX motorRight = new TalonFX(Constants.Intake.rightCANID);
 
-  private SlewRateLimiter limiter = new SlewRateLimiter(0.5);
+  private SlewRateLimiter limiter = new SlewRateLimiter(1);
 
   double speed = Constants.Intake.speed;
   double targetSpeed = 0;
@@ -62,17 +58,27 @@ public class Intake extends SubsystemBase {
     return !(targetSpeed == 0);
   }
 
+  public void inAndOut() {
+    motorCenter.set(limiter.calculate(-targetSpeed));
+    motorLeft.set(limiter.calculate(targetSpeed));
+    motorRight.set(limiter.calculate(targetSpeed));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Intake Running", isRunning());
 
     motorLeft.set(limiter.calculate(targetSpeed));
-    motorRight.set(limiter.calculate(targetSpeed));
     motorCenter.set(limiter.calculate(targetSpeed));
+    motorRight.set(limiter.calculate(targetSpeed));
   }
 
   public Command reverseIntakeCommand() {
     return this.run(() -> set(-0.8));
+  }
+
+  public Command runOnHold() {
+    return this.runEnd(() -> start(), () -> stop());
   }
 }

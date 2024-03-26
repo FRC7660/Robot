@@ -167,6 +167,10 @@ public class Launcher extends SubsystemBase {
     return isReady;
   }
 
+  public boolean isAtTargetVelo() {
+    return readyToLaunch(goalVelo);
+  }
+
   public void setLaunchPosition(LaunchPosition launchPosition) {
     goalPosition = launchPosition;
   }

@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.4879007339477539,
+      "y": 4.028048038482666
+    },
+    "rotation": -179.52254458984098
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Choreo 2Piece 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Choreo 2 Piece 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "index"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Choreo 2 Piece 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": true
+}
