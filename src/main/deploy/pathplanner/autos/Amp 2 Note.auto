@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7669596672058105,
-      "y": 6.689471244812012
+      "x": 0.8056966066360474,
+      "y": 6.671253204345703
     },
-    "rotation": -119.16761070020347
+    "rotation": -126.86988481229311
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp 2 Piece 0"
+          }
+        },
         {
           "type": "named",
           "data": {

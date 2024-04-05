@@ -21,15 +21,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Launch.LaunchPreset;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDrive;
-import frc.robot.commands.AbsoluteDriveAdv;
 import frc.robot.commands.AlignLaunchAuto;
 import frc.robot.commands.FeedLauncher;
+import frc.robot.commands.IntakeAndIndex;
 import frc.robot.commands.IntakeSpit;
 import frc.robot.commands.LaunchWithVelo;
 import frc.robot.commands.LaunchWithVeloAuton;
 import frc.robot.commands.PassiveLaunchSpin;
 import frc.robot.commands.PrimeIndex;
-import frc.robot.commands.RunIntake;
 import frc.robot.commands.SwitchLaunchAngle;
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.Climb;
@@ -39,7 +38,6 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Transfer;
 import java.io.File;
-import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -71,7 +69,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "align-launch", new AlignLaunchAuto(m_swerve, m_launch, m_index, LaunchPreset.SAFE, 0.5));
     NamedCommands.registerCommand(
-        "subwoofer-launch", new LaunchWithVeloAuton(m_launch, m_index, 3500, 0.5));
+        "subwoofer-launch", new LaunchWithVeloAuton(m_launch, m_index, 3500, 1.5));
     NamedCommands.registerCommand("reverse intake", m_intake.reverseIntakeCommand());
 
     CameraServer.startAutomaticCapture(0);
@@ -79,20 +77,6 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
-
-    DoubleSupplier povAngle = () -> driver.getPOV();
-
-    Trigger driverUp =
-        new Trigger(
-            () ->
-                (povAngle.getAsDouble() >= 315
-                    || (povAngle.getAsDouble() <= 45 && povAngle.getAsDouble() >= 0)));
-    Trigger driverDown =
-        new Trigger(() -> (povAngle.getAsDouble() >= 135 && povAngle.getAsDouble() <= 225));
-    Trigger driverLeft =
-        new Trigger(() -> (povAngle.getAsDouble() >= 225 && povAngle.getAsDouble() <= 315));
-    Trigger driverRight =
-        new Trigger(() -> (povAngle.getAsDouble() >= 45 && povAngle.getAsDouble() <= 135));
 
     AbsoluteDrive closedAbsoluteDrive =
         new AbsoluteDrive(
@@ -111,17 +95,6 @@ public class RobotContainer {
             () -> driver.getRightX() * (Robot.alliance == Alliance.Blue ? -1 : 1),
             () -> driver.getRightY() * (Robot.alliance == Alliance.Blue ? -1 : 1));
 
-    AbsoluteDriveAdv advancedDrive =
-        new AbsoluteDriveAdv(
-            m_swerve,
-            () -> MathUtil.applyDeadband(-driver.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-            () -> MathUtil.applyDeadband(-driver.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () -> MathUtil.applyDeadband(driver.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
-            () -> driverUp.getAsBoolean(),
-            () -> driverDown.getAsBoolean(),
-            () -> driverLeft.getAsBoolean(),
-            () -> driverRight.getAsBoolean());
-
     m_swerve.setDefaultCommand(
         !RobotBase.isSimulation() ? closedAbsoluteDrive : closedAbsoluteDrive);
     m_launch.setDefaultCommand(new PassiveLaunchSpin(m_launch, m_index));
@@ -133,25 +106,19 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(coDriver.getLeftY(), Constants.Climb.deadzone)));
 
     // add auto options
-    m_chooser.setDefaultOption("Test Drive", m_swerve.getAutonomousCommand("Test Drive"));
-
-    m_chooser.addOption("Mid 2 Piece", m_swerve.getAutonomousCommand("Mid 2 Piece"));
-    m_chooser.addOption("1 Centerline", m_swerve.getAutonomousCommand("1 Centerline"));
-    m_chooser.addOption("5 Centerline", m_swerve.getAutonomousCommand("5 Centerline"));
-    m_chooser.addOption("Close 2", m_swerve.getAutonomousCommand("Close 2 Note"));
-    m_chooser.addOption("Close 3", m_swerve.getAutonomousCommand("Close 3 Note"));
-    m_chooser.addOption("Mid 2", m_swerve.getAutonomousCommand("2 Piece Mid"));
+    m_chooser.addOption("Source 1", m_swerve.getAutonomousCommand("Source 1 Note"));
+    m_chooser.addOption(
+        "Source 2 Centerline", m_swerve.getAutonomousCommand("Source 2 Note Centerline"));
+    m_chooser.addOption("Source 2 Close", m_swerve.getAutonomousCommand("Source 2 Note Close"));
+    m_chooser.addOption("Source 3", m_swerve.getAutonomousCommand("Source 3 Note"));
+    m_chooser.addOption("Middle 1", m_swerve.getAutonomousCommand("Middle 1 Note"));
+    m_chooser.addOption("Middle 3", m_swerve.getAutonomousCommand("Middle 3 Note"));
+    m_chooser.addOption("Amp 1", m_swerve.getAutonomousCommand("Amp 1 Note"));
     m_chooser.addOption("Amp 2", m_swerve.getAutonomousCommand("Amp 2 Note"));
     m_chooser.addOption("Amp 3", m_swerve.getAutonomousCommand("Amp 3 Note"));
     m_chooser.addOption(
         "Just Shoot", new AlignLaunchAuto(m_swerve, m_launch, m_index, LaunchPreset.SUBWOOFER, 1));
-    m_chooser.addOption("Just Chill", m_swerve.noAuto());
-    m_chooser.addOption("Short Shot Center", m_swerve.getAutonomousCommand("Short Shot Center"));
-    m_chooser.addOption("Short Shot Safe", m_swerve.getAutonomousCommand("Short Shot Safe"));
-    m_chooser.addOption("Short Shot Amp", m_swerve.getAutonomousCommand("Short Shot Amp"));
-    m_chooser.addOption("Choreo Test", m_swerve.getAutonomousCommand("ChoreoTest"));
-    m_chooser.addOption("2m drive", m_swerve.getAutonomousCommand("2m drive"));
-    m_chooser.addOption("Choreo 2m Drive", m_swerve.getAutonomousCommand("Choreo 2m"));
+    m_chooser.addOption("2 Meter tuning", m_swerve.getAutonomousCommand("Choreo 2m"));
 
     SmartDashboard.putData(m_chooser);
   }
@@ -168,16 +135,16 @@ public class RobotContainer {
   private void configureBindings() {
 
     JoystickButton leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    leftBumper.whileTrue(new RunIntake(m_intake, m_transfer));
+    leftBumper.toggleOnTrue(new IntakeAndIndex(m_intake, m_index, m_transfer));
 
     JoystickButton rb = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     rb.whileTrue(new LaunchWithVelo(m_launch, m_index, -1400, false));
 
-    JoystickButton lb = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
-    lb.whileTrue(new IntakeSpit(m_intake, m_transfer));
+    JoystickButton coLb = new JoystickButton(coDriver, XboxController.Button.kLeftBumper.value);
+    coLb.whileTrue(new IntakeSpit(m_intake, m_transfer));
 
-    JoystickButton coRB = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
-    coRB.onTrue(new PrimeIndex(m_index, m_transfer));
+    /*JoystickButton coRB = new JoystickButton(coDriver, XboxController.Button.kRightBumper.value);
+    coRB.onTrue(new PrimeIndex(m_index, m_transfer));*/
 
     Trigger lt = new Trigger(() -> driver.getLeftTriggerAxis() >= 0.05);
     lt.whileTrue(m_swerve.alignCommand());
@@ -189,13 +156,13 @@ public class RobotContainer {
     x.whileTrue(m_swerve.updatePositionCommand());
 
     JoystickButton a = new JoystickButton(driver, XboxController.Button.kA.value);
-    a.whileTrue(new LaunchWithVelo(m_launch, m_index, 2800, false));
+    a.whileTrue(new LaunchWithVelo(m_launch, m_index, 1000, false));
 
     JoystickButton y = new JoystickButton(driver, XboxController.Button.kY.value);
     y.whileTrue(new SwitchLaunchAngle(m_launch));
 
     JoystickButton b = new JoystickButton(driver, XboxController.Button.kB.value);
-    b.whileTrue(new LaunchWithVelo(m_launch, m_index, 5200, true));
+    b.whileTrue(new LaunchWithVelo(m_launch, m_index, 5200, false));
 
     POVButton up = new POVButton(driver, 0);
     up.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.SAFE));
@@ -207,7 +174,7 @@ public class RobotContainer {
     left.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.AMP));
 
     POVButton right = new POVButton(driver, 90);
-    right.onTrue(m_swerve.flipOdomCommand());
+    right.onTrue(m_launch.setLaunchPresetCommand(LaunchPreset.OFF));
   }
 
   /**

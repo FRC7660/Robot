@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
@@ -22,7 +23,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -101,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase
     setupCustom();
     initDriveTalons();
     setupFOC();
+    setCurrentLimits();
   }
 
   /**
@@ -116,6 +117,7 @@ public class SwerveSubsystem extends SubsystemBase
     setupCustom();
     initDriveTalons();
     setupFOC();
+    setCurrentLimits();
   }
 
   /**
@@ -346,6 +348,28 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
+    updateMatchTime();
+  }
+
+  private void updateMatchTime() {
+    int time = Math.max((int) DriverStation.getMatchTime(), 0);
+    String matchTime = String.format("%01d:%02d", time / 60, time % 60);
+    SmartDashboard.putString("Match Time", matchTime);
+  }
+
+  private void setCurrentLimits() {
+    for (SwerveModule swerveModule : swerveDrive.getModules()){
+      TalonFX motor = (TalonFX) swerveModule.getDriveMotor().getMotor();
+      CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+      motor.getConfigurator().refresh(config);
+      config.StatorCurrentLimitEnable = true;
+      config.SupplyCurrentLimitEnable = true;
+      config.SupplyCurrentThreshold = 60;
+      config.SupplyTimeThreshold = 2.5;
+      config.StatorCurrentLimit = Constants.driveStatorCurrentLimit;
+      config.SupplyCurrentLimit = Constants.driveSupplyCurrentLimit;
+      motor.getConfigurator().apply(config);
+    }
   }
 
   @Override
@@ -593,10 +617,22 @@ public class SwerveSubsystem extends SubsystemBase
       setRotation(newRotation);
       return ((5 >= offsetDegrees) && (-5 <= offsetDegrees));
     } else {
-      double newRotation = getHeading().getRadians() + Units.degreesToRadians(20) * (Robot.alliance == Alliance.Blue ? -1 : 1);
-      setRotation(newRotation);
+      faceSpeaker();
       return false;
     }
+  }
+
+  public void faceSpeaker() {
+    double targetX = (Robot.alliance == Alliance.Blue ? 0 : Units.feetToMeters(54));
+    double targetY = 7; //Offset of speaker in meters
+    Pose2d currPose = swerveDrive.getPose();
+    double currX = currPose.getX();
+    double currY = currPose.getY();
+    double xOffset = targetX - currX;
+    double yOffset = targetY - currY;
+    double angle = Math.atan2(yOffset, xOffset);
+    System.out.println("Aligning to angle" + angle);
+    setRotation(angle);
   }
 
   public void resetToDashboard() {

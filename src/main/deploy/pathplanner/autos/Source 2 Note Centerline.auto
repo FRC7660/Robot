@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.528948516329338,
-      "y": 7.30256890442522
+      "x": 0.4625682830810547,
+      "y": 4.048226833343506
     },
-    "rotation": -179.94461106789504
+    "rotation": -179.99999296355855
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Close 2-1"
+            "pathName": "Close 2 Note 1"
           }
         },
         {
@@ -30,21 +30,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "index"
+            "pathName": "Close 2 Note 4"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Close 2-2"
+            "waitTime": 0.3
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Close 2-3"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Close 2 Note 5"
+                }
+              }
+            ]
           }
         },
         {
@@ -57,17 +70,11 @@
           "type": "named",
           "data": {
             "name": "align-launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Close 2-Escape"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }

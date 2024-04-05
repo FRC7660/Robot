@@ -2,19 +2,56 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.4625682830810547,
-      "y": 4.048226833343506
+      "x": 1.3875831365585327,
+      "y": 5.578441619873047
     },
-    "rotation": -179.99999296355855
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "subwoofer-launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Close 2 Note 1"
+            "pathName": "Mid 3 1"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid 3 2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         },
         {
@@ -32,61 +69,38 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Close 2 Note 2"
+            "pathName": "Mid 3 3"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "index"
+            "waitTime": 0.3
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Close 2 Note 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "align-launch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Close 2 Note 4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "index"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid 3 4"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Close 2 Note 5"
           }
         },
         {

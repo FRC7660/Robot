@@ -1,0 +1,48 @@
+<dashboard-tab
+    tab-name="TeleOperated"
+    slot="tab"
+    selected=""
+    source-provider="NetworkTables"
+><frc-sendable-chooser
+        source-provider="NetworkTables"
+        style="transform: translate(613.6px, 106.4px); width: 383.175px; height: 78.5875px;"
+        options="[]"
+        source-key="/SmartDashboard/SendableChooser[0]"
+    ></frc-sendable-chooser><frc-basic-fms-info
+        source-provider="NetworkTables"
+        style="transform: translate(621.34px, 9.99997px);"
+        source-key="/FMSInfo"
+    ></frc-basic-fms-info><frc-camera-wrapper
+        source-provider="NetworkTables"
+        style="transform: translate(469.588px, 355.25px); width: 670.8px; height: 407.15px;"
+        source-key="/CameraPublisher/limelight"
+        streams="[]"
+        background-color="black"
+        wait-image="./no-camera-stream.jpg"
+        hide-crosshair=""
+        crosshair-color="white"
+    ></frc-camera-wrapper><frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(1.58752px, 0px); width: 476.775px; height: 762.4px;"
+        source-key="/SmartDashboard/Intake Running"
+        label="Intake Running"
+    ></frc-boolean-box><frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(1137.19px, 374.413px); width: 398.8px; height: 387.988px;"
+        source-key="/SmartDashboard/Lower Break-Beam"
+        label="Lower Index"
+    ></frc-boolean-box><frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(1136.8px, 0px); width: 399.188px; height: 384.775px;"
+        source-key="/SmartDashboard/Upper Break-Beam"
+        label="Upper Index"
+    ></frc-boolean-box><frc-label
+        text="label"
+        source-provider="NetworkTables"
+        style="transform: translate(628.788px, 172.8px); width: 342.013px; height: 172px; font-size: 120pt; color: rgb(255, 0, 0);"
+        source-key="/SmartDashboard/Match Time"
+    ></frc-label></dashboard-tab><dashboard-tab
+    slot="tab"
+    tab-name="Autonomous"
+    source-provider="NetworkTables"
+></dashboard-tab>

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.367427722973922,
-      "y": 5.5866114582541275
+      "x": 1.328428690111538,
+      "y": 5.52811290895741
     },
-    "rotation": 179.5103044068707
+    "rotation": 179.056944767529
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Shoot Center 1"
+            "pathName": "Middle 1 Note 0"
           }
         },
         {
@@ -24,9 +24,15 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Simple Shoot Center 2"
+            "pathName": "Middle 1 Note 1"
           }
         }
       ]

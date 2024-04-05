@@ -34,7 +34,7 @@ public class Launcher extends SubsystemBase {
   private RelativeEncoder lowerLauncherEncoder;
 
   private CANSparkFlex angle = new CANSparkFlex(Constants.Launch.angleID, MotorType.kBrushless);
-  private SparkPIDController angleController;
+  private SparkPIDController launchAngleController;
   private SparkAbsoluteEncoder angleEncoder;
 
   private boolean tuningPIDS = false;
@@ -50,7 +50,7 @@ public class Launcher extends SubsystemBase {
     lowerLauncher.setInverted(Constants.Launch.lowerMotorInverted);
     angle.setIdleMode(IdleMode.kBrake);
 
-    angleController = angle.getPIDController();
+    launchAngleController = angle.getPIDController();
     upperLauncherController = upperLauncher.getPIDController();
     lowerLauncherController = lowerLauncher.getPIDController();
 
@@ -61,7 +61,7 @@ public class Launcher extends SubsystemBase {
 
     upperLauncherController.setFeedbackDevice(upperLauncherEncoder);
     lowerLauncherController.setFeedbackDevice(lowerLauncherEncoder);
-    angleController.setFeedbackDevice(angleEncoder);
+    launchAngleController.setFeedbackDevice(angleEncoder);
 
     upperLauncherEncoder.setVelocityConversionFactor(Constants.Launch.launcherConversionFactor);
     lowerLauncherEncoder.setVelocityConversionFactor(Constants.Launch.launcherConversionFactor);
@@ -72,15 +72,18 @@ public class Launcher extends SubsystemBase {
     showPIDs();
     SmartDashboard.putNumber("Launch Speed", 0);
 
-    angleController.setFF(0);
-    angleController.setOutputRange(-1, 1);
+    launchAngleController.setFF(0);
+    launchAngleController.setOutputRange(-1, 1);
 
-    angleController.setSmartMotionMaxVelocity(2000, 0);
-    angleController.setSmartMotionMinOutputVelocity(0, 0);
-    angleController.setSmartMotionMaxAccel(1500, 0);
-    angleController.setSmartMotionAllowedClosedLoopError(0, 0);
+    launchAngleController.setSmartMotionMaxVelocity(2000, 0);
+    launchAngleController.setSmartMotionMinOutputVelocity(0, 0);
+    launchAngleController.setSmartMotionMaxAccel(1500, 0);
+    launchAngleController.setSmartMotionAllowedClosedLoopError(0, 0);
 
     goalVelo = Constants.Launch.farLaunchPosition;
+
+    upperLauncher.setSmartCurrentLimit(60, 10);
+    lowerLauncher.setSmartCurrentLimit(60, 10);
   }
 
   private void showPIDs() {
@@ -89,9 +92,9 @@ public class Launcher extends SubsystemBase {
     SmartDashboard.putNumber("Launch D", upperLauncherController.getD());
     SmartDashboard.putNumber("Launch Velo", getCurrentVelocity());
 
-    SmartDashboard.putNumber("Angle P", angleController.getP());
-    SmartDashboard.putNumber("Angle I", angleController.getI());
-    SmartDashboard.putNumber("Angle D", angleController.getD());
+    SmartDashboard.putNumber("Angle P", launchAngleController.getP());
+    SmartDashboard.putNumber("Angle I", launchAngleController.getI());
+    SmartDashboard.putNumber("Angle D", launchAngleController.getD());
     SmartDashboard.putNumber("Angle Position", angleEncoder.getPosition());
   }
 
@@ -117,10 +120,10 @@ public class Launcher extends SubsystemBase {
   }
 
   private void updateAnglePIDs(double p, double i, double d, double ff) {
-    angleController.setP(p);
-    angleController.setI(i);
-    angleController.setD(d);
-    angleController.setFF(ff);
+    launchAngleController.setP(p);
+    launchAngleController.setI(i);
+    launchAngleController.setD(d);
+    launchAngleController.setFF(ff);
   }
 
   private void updatePIDFromDashboard(String keyWord, MyMethod runnable) {
@@ -198,6 +201,9 @@ public class Launcher extends SubsystemBase {
     } else if (preset == LaunchPreset.AMP) {
       goalPosition = LaunchPosition.CLOSE;
       goalVelo = Constants.Launch.ampLaunchVelo;
+    } else {
+      goalPosition = LaunchPosition.CLOSE;
+      goalVelo = 50;
     }
   }
 
@@ -218,11 +224,12 @@ public class Launcher extends SubsystemBase {
       updatePIDFromDashboard("Angle", this::updateAnglePIDs);
     }
     if (goalPosition == LaunchPosition.FAR) {
-      angleController.setReference(Constants.Launch.farLaunchPosition, ControlType.kPosition);
+      launchAngleController.setReference(Constants.Launch.farLaunchPosition, ControlType.kPosition);
       curPosition = goalPosition;
       SmartDashboard.putNumber("Angle Desired", Constants.Launch.farLaunchPosition);
     } else {
-      angleController.setReference(Constants.Launch.closeLaunchPosition, ControlType.kPosition);
+      launchAngleController.setReference(
+          Constants.Launch.closeLaunchPosition, ControlType.kPosition);
       curPosition = goalPosition;
       SmartDashboard.putNumber("Angle Desired", Constants.Launch.closeLaunchPosition);
     }

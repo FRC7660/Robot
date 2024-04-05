@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.77430354290908,
-      "y": 4.303448834817898
+      "x": 0.8116915046181651,
+      "y": 6.6493351038958615
     },
-    "rotation": 120.48894049983096
+    "rotation": -121.34958086524298
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Shoot Safe 1 Blue"
+            "pathName": "Amp 1 Note 0"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "align-launch"
+            "name": "subwoofer-launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Shoot Safe 2"
+            "pathName": "Amp 1 Note 1"
           }
         }
       ]

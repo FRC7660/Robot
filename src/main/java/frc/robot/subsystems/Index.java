@@ -30,6 +30,8 @@ public class Index extends SubsystemBase {
   private void set(double power) {
     motorWhooper.set(power);
     motorUpper.set(power - 0.5);
+    motorWhooper.setSmartCurrentLimit(60);
+    motorUpper.setSmartCurrentLimit(20);
     currentSpeed = power;
   }
 

@@ -25,6 +25,7 @@ public class LaunchWithVeloAuton extends Command {
     this.launcher = launcher;
     this.index = index;
     launchVelo = velocity;
+    this.time = time;
     addRequirements(launcher);
     switchTimer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
@@ -36,7 +37,6 @@ public class LaunchWithVeloAuton extends Command {
     System.out.println("Launcher is initializing");
     launcher.setLaunchVelocity(launchVelo);
     switchTimer.reset();
-    switchTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
