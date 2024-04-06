@@ -23,8 +23,8 @@ public final class Constants {
   public static final boolean kLeftBackDriveInverted = false;
   public static final boolean kRightBackDriveInverted = false;
   public static final boolean kRightFrontDriveInverted = false;
-  public static final int driveStatorCurrentLimit = 120;
-  public static final int driveSupplyCurrentLimit = 120;
+  public static final int driveStatorCurrentLimit = 110;
+  public static final int driveSupplyCurrentLimit = 105;
 
   public static final double LOOP_TIME = 0.13;
   public static final double ROBOT_MASS = 115 * 0.453592;
