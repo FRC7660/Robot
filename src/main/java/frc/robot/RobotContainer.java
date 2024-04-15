@@ -109,13 +109,12 @@ public class RobotContainer {
     m_chooser.addOption("Source 1", m_swerve.getAutonomousCommand("Source 1 Note"));
     m_chooser.addOption(
         "Source 2 Centerline", m_swerve.getAutonomousCommand("Source 2 Note Centerline"));
-    m_chooser.addOption("Source 2 Close", m_swerve.getAutonomousCommand("Source 2 Note Close"));
-    m_chooser.addOption("Source 3", m_swerve.getAutonomousCommand("Source 3 Note"));
+    m_chooser.addOption("Source 3 Close", m_swerve.getAutonomousCommand("Source 3 Note"));
+    m_chooser.addOption(
+        "Source 3 Centerlines", m_swerve.getAutonomousCommand("2 Centerline Notes"));
     m_chooser.addOption("Middle 1", m_swerve.getAutonomousCommand("Middle 1 Note"));
-    m_chooser.addOption("Middle 3", m_swerve.getAutonomousCommand("Middle 3 Note"));
     m_chooser.addOption("Amp 1", m_swerve.getAutonomousCommand("Amp 1 Note"));
-    m_chooser.addOption("Amp 2", m_swerve.getAutonomousCommand("Amp 2 Note"));
-    m_chooser.addOption("Amp 3", m_swerve.getAutonomousCommand("Amp 3 Note"));
+    m_chooser.addOption("Amp 4", m_swerve.getAutonomousCommand("Amp 3 Note"));
     m_chooser.addOption(
         "Just Shoot", new AlignLaunchAuto(m_swerve, m_launch, m_index, LaunchPreset.SUBWOOFER, 1));
     m_chooser.addOption("2 Meter tuning", m_swerve.getAutonomousCommand("Choreo 2m"));
@@ -135,7 +134,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     JoystickButton leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    leftBumper.toggleOnTrue(new IntakeAndIndex(m_intake, m_index, m_transfer));
+    leftBumper.whileTrue(new IntakeAndIndex(m_intake, m_index, m_transfer));
 
     JoystickButton rb = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     rb.whileTrue(new LaunchWithVelo(m_launch, m_index, -1400, false));

@@ -13,10 +13,10 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFX motorLeft = new TalonFX(Constants.Intake.leftCANID);
-
+  // private TalonFX motorLeft = new TalonFX(Constants.Intake.leftCANID);
   private TalonFX motorCenter = new TalonFX(Constants.Intake.centerCANID);
-  private TalonFX motorRight = new TalonFX(Constants.Intake.rightCANID);
+
+  // private TalonFX motorRight = new TalonFX(Constants.Intake.rightCANID);
 
   private SlewRateLimiter limiter = new SlewRateLimiter(1);
 
@@ -24,9 +24,9 @@ public class Intake extends SubsystemBase {
   double targetSpeed = 0;
 
   public Intake() {
-    motorLeft.setInverted(Constants.Intake.leftInverted);
+    // motorLeft.setInverted(Constants.Intake.leftInverted);
     motorCenter.setInverted(Constants.Intake.centerInverted);
-    motorRight.setInverted(Constants.Intake.rightInverted);
+    // motorRight.setInverted(Constants.Intake.rightInverted);
     stop();
   }
 
@@ -60,8 +60,8 @@ public class Intake extends SubsystemBase {
 
   public void inAndOut() {
     motorCenter.set(limiter.calculate(-targetSpeed));
-    motorLeft.set(limiter.calculate(targetSpeed));
-    motorRight.set(limiter.calculate(targetSpeed));
+    // motorLeft.set(limiter.calculate(targetSpeed));
+    // motorRight.set(limiter.calculate(targetSpeed));
   }
 
   @Override
@@ -69,9 +69,9 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Intake Running", isRunning());
 
-    motorLeft.set(limiter.calculate(targetSpeed));
+    // motorLeft.set(limiter.calculate(targetSpeed));
     motorCenter.set(limiter.calculate(targetSpeed));
-    motorRight.set(limiter.calculate(targetSpeed));
+    // motorRight.set(limiter.calculate(targetSpeed));
   }
 
   public Command reverseIntakeCommand() {

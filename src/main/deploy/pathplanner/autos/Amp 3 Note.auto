@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8056966066360474,
-      "y": 6.671253204345703
+      "x": 0.5076572895050049,
+      "y": 7.026061534881592
     },
-    "rotation": -126.86988481229311
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,49 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp 2 Piece 0"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "subwoofer-launch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Amp 2 Piece 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "index"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp 2 Piece 2"
           }
         },
         {
@@ -74,13 +32,81 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp 3 Piece 3"
+            "pathName": "Amp 2 Piece 2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp 2 Piece 3"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "index"
+            "name": "intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp 3 Piece 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align-launch"
           }
         },
         {
@@ -92,7 +118,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp 3 Piece 4"
+            "pathName": "Amp 3 Piece 5"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp 3 Piece 6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "index"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         },
         {

@@ -59,7 +59,6 @@ public class AlignLaunchAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    launcher.setLaunchVelocity(0);
     index.stop();
   }
 

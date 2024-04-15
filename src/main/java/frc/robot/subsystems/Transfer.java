@@ -18,7 +18,7 @@ public class Transfer extends SubsystemBase {
   public Transfer() {
     motor.setInverted(Constants.Transfer.motorInverted);
     currentSpeed = 0;
-    motor.setSmartCurrentLimit(20);
+    motor.setSmartCurrentLimit(40);
   }
 
   public void start() {
